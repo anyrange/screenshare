@@ -1,24 +1,23 @@
 {
   "name": "screen-share",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "preinstall": "npx only-allow pnpm",
+    "peer": "peerjs --port 9000 --key peerjs --path /peer",
+    "dev": "concurrently \"vite\" \"pnpm run peer\"",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "nanoid": "^3.1.30",
-    "next": "12.0.4",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "socket.io": "^4.4.0",
-    "socket.io-client": "^4.4.0"
+    "peer": "^0.6.1",
+    "peerjs": "^1.3.2",
+    "vue": "^3.2.25"
   },
   "devDependencies": {
-    "@types/node": "16.11.9",
-    "@types/react": "17.0.36",
-    "eslint": "7",
-    "eslint-config-next": "12.0.4",
-    "typescript": "4.5.2"
+    "@vitejs/plugin-vue": "^2.0.0",
+    "concurrently": "^7.0.0",
+    "typescript": "^4.4.4",
+    "vite": "^2.7.2",
+    "vue-tsc": "^0.29.8"
   }
 }
