@@ -1,7 +1,10 @@
 <script setup lang="ts">
   import { ref } from "vue";
   import { useRoute } from "vue-router";
+  import { useFps } from "@vueuse/core";
   import { createPeer } from "@/peer";
+
+  const fps = useFps();
 
   const video = ref();
 
@@ -25,23 +28,46 @@
 </script>
 
 <template>
-  <div class="flex h-screen">
-    <div class="m-auto">
-      <div class="flex flex-col gap-2">
-        <p class="text-xl text-center">
-          Room id:
-          <span class="font-bold"> {{ room }} </span>
+  <div class="relative w-screen h-screen">
+    <div class="min-h-screen min-w-full">
+      <video
+        ref="video"
+        class="aspect-video absolute h-full w-full border-2 border-blue-600"
+        muted
+        autoplay
+        controls
+      />
+      <div class="absolute left-0 top-0">
+        <p class="bg-gray-700-spotify px-2 py-0.5 font-mono text-xxs">
+          fps: {{ fps }}; room id: {{ room }}
         </p>
-        <div class="flex w-full justify-center">
-          <video
-            ref="video"
-            muted
-            autoplay
-            controls
-            class="h-100 w-auto border-2 border-indigo-600"
-          />
-        </div>
       </div>
     </div>
   </div>
 </template>
+
+<style>
+  #outer {
+    display: block;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 100%;
+  }
+  #home-top-video {
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+  #home-text {
+    left: 0%;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    padding-top: 10%;
+    overflow: hidden;
+    position: absolute;
+    z-index: 0;
+    color: white;
+  }
+</style>

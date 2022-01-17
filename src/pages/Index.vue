@@ -82,7 +82,7 @@
             muted
             autoplay
             controls
-            class="h-100 w-auto border-2 border-indigo-600"
+            class="h-100 w-auto border-2 border-red-600"
           />
         </div>
       </div>
