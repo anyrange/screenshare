@@ -2,8 +2,9 @@
   import { ref, watchEffect } from "vue";
   import { useRouter } from "vue-router";
   import { useDisplayMedia, useClipboard } from "@vueuse/core";
-  import { getId } from "../utils";
-  import { createPeer } from "../peer";
+  import { maska as vMaska } from "maska";
+  import { getId } from "@/utils";
+  import { createPeer } from "@/peer";
 
   const router = useRouter();
 
@@ -44,17 +45,18 @@
           {{ enabled ? "Stop" : "Start" }} sharing my screen
         </button>
       </div>
-      <span>Or</span>
+      <span>or</span>
       <form class="flex gap-1" @submit.prevent="join">
         <label class="flex flex-col">
           <input
             v-model="roomId"
+            v-maska="'######'"
             type="text"
             placeholder="Enter room id"
             class="input"
           />
         </label>
-        <button class="btn" type="submit">Join</button>
+        <button class="btn" :disabled="!roomId" type="submit">Join</button>
       </form>
     </div>
     <template v-if="enabled">

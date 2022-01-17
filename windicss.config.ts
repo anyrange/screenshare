@@ -4,8 +4,10 @@ import colors from "windicss/colors";
 export default defineConfig({
   darkMode: "class",
   shortcuts: {
-    btn: "bg-blue-400 hover:bg-opacity-90 text-white font-bold py-1 px-3 border-b-3 active:border-t-3 active:border-b-0 border-blue-500 rounded",
-    input: "px-2 py-1 rounded text-md border-2 border-blue-400",
+    "default-focus": "outline-none focus:outline-none focus-visible:ring-2 ",
+    btn: "default-focus py-1 px-3 appearance-none bg-blue-400 hover:bg-opacity-90 text-white font-bold border-b-3 active:border-t-3 active:border-b-0 border-blue-500 rounded disabled:bg-blue-300 disabled:border-blue-400 disabled:cursor-not-allowed transition-all",
+    input:
+      "default-focus px-2 py-1 appearance-none rounded text-md border-2 border-blue-400 bg-transparent",
   },
   theme: {
     extend: {
