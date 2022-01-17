@@ -43,7 +43,7 @@
 <template>
   <div class="flex flex-col gap-10 mt-20">
     <h1 class="text-center text-3xl">ScreenShare</h1>
-    <div class="flex flex-row justify-center items-center gap-6">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-6">
       <div>
         <button class="btn" @click="enabled = !enabled">
           {{ enabled ? "Stop" : "Start" }} sharing my screen
@@ -51,7 +51,7 @@
       </div>
       <template v-if="!enabled">
         <span>or</span>
-        <form class="flex gap-1" @submit.prevent="join">
+        <form class="flex flex-col sm:flex-row gap-1" @submit.prevent="join">
           <label class="flex flex-col">
             <input
               v-model="roomId"
