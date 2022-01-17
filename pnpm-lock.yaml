@@ -12,6 +12,7 @@ specifiers:
   eslint: ^7.27.0
   eslint-plugin-prettier: ^3.4.0
   eslint-plugin-vue: ^7.10.0
+  express: ^4.17.2
   maska: ^1.5.0
   nanoid: ^3.2.0
   peer: ^0.6.1
@@ -27,6 +28,7 @@ specifiers:
 
 dependencies:
   '@vueuse/core': 7.5.3_vue@3.2.27
+  express: 4.17.2
   maska: 1.5.0
   nanoid: 3.2.0
   peer: 0.6.1

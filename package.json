@@ -3,6 +3,8 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "peer": "peerjs --port 9000 --key peerjs --path /peer",
+    "server": "node server.js",
+    "client": "vite",
     "dev": "concurrently \"vite\" \"pnpm run peer\"",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview --port 3005",
@@ -11,6 +13,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^7.5.3",
+    "express": "^4.17.2",
     "maska": "^1.5.0",
     "nanoid": "^3.2.0",
     "peer": "^0.6.1",
