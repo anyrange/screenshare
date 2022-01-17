@@ -5,7 +5,7 @@ export default defineConfig({
   darkMode: "class",
   shortcuts: {
     "default-focus": "outline-none focus:outline-none focus-visible:ring-2 ",
-    btn: "default-focus py-1 px-3 appearance-none bg-blue-400 hover:bg-opacity-90 text-white font-bold border-b-3 active:border-t-3 active:border-b-0 border-blue-500 rounded disabled:bg-blue-300 disabled:border-blue-400 disabled:cursor-not-allowed transition-all",
+    btn: "default-focus py-1 px-3 appearance-none bg-blue-400 hover:bg-opacity-90 text-white font-bold border-b-3 active:border-t-3 active:border-b-0 border-blue-500 rounded disabled:bg-blue-300 disabled:border-blue-400 disabled:cursor-not-allowed",
     input:
       "default-focus px-2 py-1 appearance-none rounded text-md border-2 border-blue-400 bg-transparent",
   },
