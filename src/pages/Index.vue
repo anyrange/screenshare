@@ -49,19 +49,21 @@
           {{ enabled ? "Stop" : "Start" }} sharing my screen
         </button>
       </div>
-      <span>or</span>
-      <form class="flex gap-1" @submit.prevent="join">
-        <label class="flex flex-col">
-          <input
-            v-model="roomId"
-            v-maska="'######'"
-            type="text"
-            placeholder="Enter room id"
-            class="input"
-          />
-        </label>
-        <button class="btn" :disabled="!roomId" type="submit">Join</button>
-      </form>
+      <template v-if="!enabled">
+        <span>or</span>
+        <form class="flex gap-1" @submit.prevent="join">
+          <label class="flex flex-col">
+            <input
+              v-model="roomId"
+              v-maska="'######'"
+              type="text"
+              placeholder="Enter room id"
+              class="input"
+            />
+          </label>
+          <button class="btn" :disabled="!roomId" type="submit">Join</button>
+        </form>
+      </template>
     </div>
     <template v-if="enabled">
       <div class="flex flex-col gap-2">
