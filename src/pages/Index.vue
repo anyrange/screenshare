@@ -27,12 +27,16 @@
   };
 
   watchEffect(() => {
-    if (video.value) {
-      video.value.srcObject = stream.value;
-      peer.on("call", (call) => call.answer(stream.value));
-    } else {
-      console.log("stop");
-    }
+    if (!video.value) return console.log("stop");
+
+    video.value.srcObject = stream.value;
+    peer.on("call", (call) => call.answer(stream.value));
+
+    peer.on("connection", (conn) => {
+      conn.on("open", () =>
+        peer.call(conn.peer, stream.value || new MediaStream()),
+      );
+    });
   });
 </script>
 

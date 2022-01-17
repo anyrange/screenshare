@@ -1,51 +1,27 @@
 <script setup lang="ts">
-  import { ref, onMounted } from "vue";
+  import { ref } from "vue";
   import { useRoute } from "vue-router";
-  import { getId } from "../utils/";
-  import { createPeer } from "../peer";
+  import { createPeer } from "@/peer";
 
   const video = ref();
 
   const route = useRoute();
   const room = route.params.id as string;
 
-  onMounted(async () => {
-    const constraints = {
-      video: true,
-      audio: false,
-    };
+  const peer = createPeer();
 
-    const id = getId();
-    const peer = createPeer(id);
-    console.log(`id: ${id}, peer: ${peer}`);
+  console.log(room);
 
-    if (!room) {
-      const stream = await navigator.mediaDevices
-        .getDisplayMedia(constraints)
-        .catch((error) => {
-          console.error("Error accessing media devices.", error);
-        });
+  peer.on("open", () => peer.connect(room));
 
-      if (stream) peer.on("call", (call) => call.answer(stream));
-
-      video.value.srcObject = stream;
-    }
-
-    if (room) {
-      console.log(room);
-
-      // kostyl'
-      const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
-      //
-
-      if (stream) {
-        const call = peer.call(room, stream);
-        call.on("stream", (remoteStream) => {
-          video.value.srcObject = remoteStream;
-        });
-      }
-    }
+  peer.on("call", (call) => {
+    call.on("stream", (remoteStream) => {
+      video.value.srcObject = remoteStream;
+    });
+    call.answer();
   });
+
+  // to do: call end error handling
 </script>
 
 <template>
