@@ -56,7 +56,7 @@
             <input
               v-model="roomId"
               v-maska="'######'"
-              type="text"
+              type="number"
               placeholder="Enter room id"
               class="input"
             />
