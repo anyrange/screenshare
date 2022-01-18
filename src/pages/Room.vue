@@ -13,9 +13,13 @@
 
   const peer = createPeer();
 
-  console.log(room);
-
-  peer.on("open", () => peer.connect(room));
+  peer.on("open", () => {
+    const conn = peer.connect(room);
+    conn.on("close", () => {
+      console.log("stream closed");
+      // to do: handle stream end
+    });
+  });
 
   peer.on("call", (call) => {
     call.on("stream", (remoteStream) => {
@@ -24,7 +28,7 @@
     call.answer();
   });
 
-  // to do: call end error handling
+  window.onbeforeunload = () => peer.destroy();
 </script>
 
 <template>

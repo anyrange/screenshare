@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watchEffect } from "vue";
+  import { ref, watchEffect, watch, computed, reactive } from "vue";
   import { useRouter } from "vue-router";
   import { useDisplayMedia, useClipboard } from "@vueuse/core";
   import { maska as vMaska } from "maska";
@@ -10,6 +10,10 @@
 
   const video = ref();
   const roomId = ref("");
+
+  const connectedPeers = reactive(new Set());
+  const connections = reactive<any[]>([]);
+  const viewers = computed(() => connectedPeers.size);
 
   const id = getId();
   const peer = createPeer(id);
@@ -33,11 +37,27 @@
     peer.on("call", (call) => call.answer(stream.value));
 
     peer.on("connection", (conn) => {
-      conn.on("open", () =>
-        peer.call(conn.peer, stream.value || new MediaStream()),
-      );
+      connections.push(conn);
+      connectedPeers.add(conn.peer);
+      conn.on("open", () => {
+        if (!stream.value) return;
+        peer.call(conn.peer, stream.value);
+      });
+      conn.on("close", () => connectedPeers.delete(conn.peer));
     });
   });
+
+  watch(enabled, (v) => {
+    connectedPeers.clear();
+
+    if (peer.disconnected && v) peer.reconnect();
+    if (!v) {
+      peer.disconnect();
+      connections.forEach((conn) => conn.close());
+      connections.splice(0, connections.length);
+    }
+  });
+  window.onbeforeunload = () => peer.destroy();
 </script>
 
 <template>
