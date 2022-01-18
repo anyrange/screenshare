@@ -81,7 +81,13 @@
               class="input"
             />
           </label>
-          <button class="btn" :disabled="!roomId" type="submit">Join</button>
+          <button
+            class="btn"
+            :disabled="roomId.toString().length !== 6"
+            type="submit"
+          >
+            Join
+          </button>
         </form>
       </template>
     </div>
@@ -89,7 +95,10 @@
       <div class="flex flex-col gap-2">
         <div class="flex flex-row items-center justify-center gap-2">
           <p class="text-xl">
-            Room id:
+            Viewers:
+            <span class="font-bold"> {{ viewers }} </span>
+            <span> | </span>
+            Room:
             <span class="font-bold"> {{ id }} </span>
           </p>
           <template v-if="isSupported">

@@ -1,23 +1,34 @@
 <script setup lang="ts">
-  import { ref } from "vue";
-  import { useRoute } from "vue-router";
+  import { ref, onDeactivated } from "vue";
+  import { useRoute, useRouter } from "vue-router";
   import { useFps } from "@vueuse/core";
   import { createPeer } from "@/peer";
 
   const fps = useFps();
+  const router = useRouter();
 
   const video = ref();
+  const isDestroyed = ref(false);
 
   const route = useRoute();
   const room = route.params.id as string;
 
   const peer = createPeer();
 
+  const goHome = () => {
+    router.push({
+      name: "index",
+    });
+  };
+
+  const destroyStream = () => {
+    isDestroyed.value = true;
+  };
+
   peer.on("open", () => {
     const conn = peer.connect(room);
     conn.on("close", () => {
-      console.log("stream closed");
-      // to do: handle stream end
+      destroyStream();
     });
   });
 
@@ -32,22 +43,36 @@
 </script>
 
 <template>
-  <div class="relative w-screen h-screen">
-    <div class="min-h-screen min-w-full">
-      <video
-        ref="video"
-        class="aspect-video absolute h-full w-full border-2 border-blue-600"
-        muted
-        autoplay
-        controls
-      />
-      <div class="absolute left-0 top-0">
-        <p class="bg-gray-700-spotify px-2 py-0.5 font-mono text-xxs">
-          fps: {{ fps }}; room id: {{ room }}
-        </p>
+  <template v-if="isDestroyed">
+    <div class="flex h-screen">
+      <div class="m-auto text-center">
+        <h1 class="font-semibold text-2xl mb-3">
+          Stream ended or does not exist
+        </h1>
+        <button class="btn" @click="goHome">Go home</button>
       </div>
     </div>
-  </div>
+  </template>
+  <template v-else>
+    <div class="relative w-screen h-screen">
+      <div class="min-h-screen min-w-full">
+        <video
+          ref="video"
+          class="aspect-video absolute h-full w-full border-2 border-blue-600"
+          muted
+          autoplay
+          controls
+        />
+        <div class="absolute left-0 top-0">
+          <p
+            class="bg-gray-700-spotify px-2 py-0.5 font-mono text-xxs text-white"
+          >
+            fps: {{ fps }}; room id: {{ room }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </template>
 </template>
 
 <style>
