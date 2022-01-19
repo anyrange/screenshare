@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onDeactivated } from "vue";
+  import { ref } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import { useFps } from "@vueuse/core";
   import { createPeer } from "@/peer";
