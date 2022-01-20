@@ -9,6 +9,7 @@
 
   const video = ref();
   const isDestroyed = ref(false);
+  const isLoading = ref(true);
 
   const route = useRoute();
   const room = route.params.id as string;
@@ -21,14 +22,13 @@
     });
   };
 
-  const destroyStream = () => {
-    isDestroyed.value = true;
-  };
-
   peer.on("open", () => {
     const conn = peer.connect(room);
+    conn.on("open", () => {
+      isLoading.value = false;
+    });
     conn.on("close", () => {
-      destroyStream();
+      isDestroyed.value = true;
     });
   });
 
@@ -43,11 +43,15 @@
 </script>
 
 <template>
-  <template v-if="isDestroyed">
+  <template v-if="isDestroyed || isLoading">
     <div class="flex h-screen">
       <div class="m-auto text-center">
         <h1 class="font-semibold text-2xl mb-3">
-          Stream ended or does not exist
+          {{
+            isLoading
+              ? "Stream is loading or does not exist"
+              : isDestroyed && "Stream ended"
+          }}
         </h1>
         <button class="btn" @click="goHome">Go home</button>
       </div>
