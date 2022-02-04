@@ -4,8 +4,7 @@ export const createPeer = (id?: string) => {
   const host = import.meta.env.VITE_PEER_SERVER as string;
   const key = (import.meta.env.VITE_KEY as string) || "peerjs";
 
-  const FALLBACK_SERVERS =
-    import.meta.env.VITE_TURN_SERVER && import.meta.env.VITE_STUN_SERVER;
+  const FALLBACK_SERVERS = import.meta.env.VITE_FALLBACK_SERVERS as boolean;
 
   return new Peer(id, {
     ...(host && { host, path: "/peer", key }),
