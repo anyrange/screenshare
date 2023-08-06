@@ -1,24 +1,21 @@
-import Peer from "peerjs";
+import P2PCF from "p2pcf";
+import { getCliendId } from "@/utils";
 
-export const createPeer = (id?: string) => {
-  const host = import.meta.env.VITE_PEER_SERVER as string;
-  const key = (import.meta.env.VITE_KEY as string) || "peerjs";
+export const openChannel = (id?: string) => {
+  const client_id = getCliendId();
 
-  const FALLBACK_SERVERS = import.meta.env.VITE_FALLBACK_SERVERS as boolean;
+  const USE_FALLBACK_SERVERS = import.meta.env.VITE_FALLBACK_SERVERS as boolean;
 
-  return new Peer(id, {
-    ...(host && { host, path: "/peer", key }),
-
-    ...(FALLBACK_SERVERS && {
-      config: {
-        iceServers: [
-          { urls: import.meta.env.VITE_STUN_SERVER as string },
-          {
-            urls: import.meta.env.VITE_TURN_SERVER as string,
-            username: import.meta.env.VITE_TURN_USER as string,
-            credential: import.meta.env.VITE_TURN_PASSWORD as string,
-          },
-        ],
+  return new P2PCF(client_id, id, {
+    // workerUrl: '<your worker url>',
+    ...(USE_FALLBACK_SERVERS && {
+      stunIceServers: {
+        urls: import.meta.env.VITE_STUN_SERVER as string,
+      },
+      turnIceServers: {
+        urls: import.meta.env.VITE_TURN_SERVER as string,
+        username: import.meta.env.VITE_TURN_USER as string,
+        credential: import.meta.env.VITE_TURN_PASSWORD as string,
       },
     }),
   });

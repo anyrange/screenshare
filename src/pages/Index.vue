@@ -4,7 +4,7 @@
   import { useDisplayMedia, useClipboard } from "@vueuse/core";
   import { maska as vMaska } from "maska";
   import { getId } from "@/utils";
-  import { createPeer } from "@/peer";
+  import { openChannel } from "@/peer";
 
   const router = useRouter();
 
@@ -12,11 +12,10 @@
   const roomId = ref("");
 
   const connectedPeers = reactive(new Set());
-  const connections = reactive<any[]>([]);
   const viewers = computed(() => connectedPeers.size);
 
   const id = getId();
-  const peer = createPeer(id);
+  const channel = openChannel(id);
 
   const { stream, enabled } = useDisplayMedia();
   const { isSupported, copy } = useClipboard();
@@ -34,30 +33,31 @@
     if (!video.value) return console.log("stop");
 
     video.value.srcObject = stream.value;
-    peer.on("call", (call) => call.answer(stream.value));
 
-    peer.on("connection", (conn) => {
-      connections.push(conn);
-      connectedPeers.add(conn.peer);
-      conn.on("open", () => {
-        if (!stream.value) return;
-        peer.call(conn.peer, stream.value);
-      });
-      conn.on("close", () => connectedPeers.delete(conn.peer));
+    channel.on("peerconnect", (peer) => {
+      if (connectedPeers.has(peer.client_id)) return;
+
+      connectedPeers.add(peer.client_id);
+
+      if (!stream.value) return;
+      peer.addStream(stream.value);
+    });
+
+    channel.start();
+
+    channel.on("peerclose", (peer) => {
+      connectedPeers.delete(peer.client_id);
     });
   });
 
   watch(enabled, (v) => {
-    connectedPeers.clear();
-
-    if (peer.disconnected && v) peer.reconnect();
     if (!v) {
-      peer.disconnect();
-      connections.forEach((conn) => conn.close());
-      connections.splice(0, connections.length);
+      connectedPeers.clear();
+      channel.destroy();
     }
   });
-  window.onbeforeunload = () => peer.destroy();
+
+  window.onbeforeunload = () => channel.destroy();
 </script>
 
 <template>

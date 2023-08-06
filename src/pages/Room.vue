@@ -2,7 +2,7 @@
   import { ref } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import { useFps } from "@vueuse/core";
-  import { createPeer } from "@/peer";
+  import { openChannel } from "@/peer";
 
   const fps = useFps();
   const router = useRouter();
@@ -14,7 +14,7 @@
   const route = useRoute();
   const room = route.params.id as string;
 
-  const peer = createPeer();
+  const channel = openChannel(room);
 
   const goHome = () => {
     router.push({
@@ -22,24 +22,23 @@
     });
   };
 
-  peer.on("open", () => {
-    const conn = peer.connect(room);
-    conn.on("open", () => {
-      isLoading.value = false;
-    });
-    conn.on("close", () => {
-      isDestroyed.value = true;
+  channel.on("peerconnect", (peer) => {
+    isLoading.value = false;
+
+    peer.on("track", (track, stream) => {
+      video.value.srcObject = stream;
+
+      channel.on("peerclose", (closedPeer) => {
+        if (peer.client_id === peer.client_id) {
+          isDestroyed.value = true;
+        }
+      });
     });
   });
 
-  peer.on("call", (call) => {
-    call.on("stream", (remoteStream) => {
-      video.value.srcObject = remoteStream;
-    });
-    call.answer();
-  });
+  channel.start();
 
-  window.onbeforeunload = () => peer.destroy();
+  window.onbeforeunload = () => channel.destroy();
 </script>
 
 <template>
