@@ -29,9 +29,9 @@
       video.value.srcObject = stream;
 
       channel.on("peerclose", (closedPeer) => {
-        if (peer.client_id === peer.client_id) {
-          isDestroyed.value = true;
-        }
+        const streamClosed = closedPeer.client_id === peer.client_id;
+
+        if (streamClosed) isDestroyed.value = true;
       });
     });
   });
